@@ -45,7 +45,7 @@ class FinancialAccount(Base):
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     currency: Mapped[str] = mapped_column(String(3), nullable=False)
     balance: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
-    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.datetime.now)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     transactions = relationship("FinancialTransaction", back_populates="account", cascade="all, delete-orphan")
 
@@ -59,9 +59,9 @@ class FinancialGoals(Base):
     current_amount: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     deadline: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     is_achieved: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.datetime.now)
-    updated_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now,
-                                                          onupdate=datetime.datetime.now)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now,
+                                                          onupdate=datetime.now)
 
 
 class FinancialTransaction(Base):
@@ -108,7 +108,7 @@ class SecuritySnapshot(Base):
     price: Mapped[int] = mapped_column(Integer, nullable=False)  # цена на начало месяца
     total_value: Mapped[int] = mapped_column(Integer, nullable=False)  # общая стоимость (price * quantity)
     profit_loss: Mapped[float] = mapped_column(Float, nullable=False)  # прибыль/убыток за месяц
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.datetime.now)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     security = relationship("Security", back_populates="snapshots")
 
 
