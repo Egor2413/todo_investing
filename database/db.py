@@ -20,11 +20,11 @@ class ToDoList(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     task: Mapped[str] = mapped_column(String(150), nullable=False)
-    date: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False, default=datetime.datetime.now)
-    due_date: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False)
+    date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.datetime.now)
+    due_date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     value: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     is_done: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    done_date: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
+    done_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
 
 
 class MonthlyStats(Base):
@@ -45,8 +45,8 @@ class FinancialAccount(Base):
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     currency: Mapped[str] = mapped_column(String(3), nullable=False)
     balance: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
-    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False, default=datetime.datetime.now)
-    updated_at: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.datetime.now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     transactions = relationship("FinancialTransaction", back_populates="account", cascade="all, delete-orphan")
 
 
@@ -57,9 +57,9 @@ class FinancialGoals(Base):
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     target_amount: Mapped[int] = mapped_column(Integer, nullable=False)
     current_amount: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    deadline: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=True)
+    deadline: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     is_achieved: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.datetime.now)
     updated_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now,
                                                           onupdate=datetime.datetime.now)
 
@@ -72,7 +72,7 @@ class FinancialTransaction(Base):
     transaction_type: Mapped[str] = mapped_column(String(20), nullable=False)  # income, expense, transfer
     amount: Mapped[int] = mapped_column(Integer, nullable=False)  # сумма в рублях
     description: Mapped[str] = mapped_column(String(255), nullable=True)  # "Пополнение", "Покупка BTC" и т.д.
-    transaction_date: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now)
+    transaction_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.datetime.now)
     account = relationship("FinancialAccount", back_populates="transactions")
 
 
@@ -89,8 +89,8 @@ class Security(Base):
     risk_level: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=5)
     avg_dividents: Mapped[float] = mapped_column(Float, nullable=False, default=0)
     account_id: Mapped[int] = mapped_column(Integer, ForeignKey("financial_account.id"), nullable=False)
-    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now)
-    updated_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now,
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.datetime.now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.datetime.now,
                                                           onupdate=datetime.datetime.now)
     snapshots = relationship("SecuritySnapshot", back_populates="security", cascade="all, delete-orphan")
 
@@ -108,7 +108,7 @@ class SecuritySnapshot(Base):
     price: Mapped[int] = mapped_column(Integer, nullable=False)  # цена на начало месяца
     total_value: Mapped[int] = mapped_column(Integer, nullable=False)  # общая стоимость (price * quantity)
     profit_loss: Mapped[float] = mapped_column(Float, nullable=False)  # прибыль/убыток за месяц
-    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=datetime.datetime.now)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.datetime.now)
     security = relationship("Security", back_populates="snapshots")
 
 
@@ -119,7 +119,7 @@ def add_task(task_title: str, due_date: str, value: int) -> int:
     with session() as db:
         new_task = ToDoList(
             task=task_title,
-            due_date=datetime.datetime.strptime(due_date, "%Y-%m-%d"),
+            due_date=datetime.strptime(due_date, "%Y-%m-%d"),
             value=value,
             is_done=False,
         )
@@ -151,7 +151,7 @@ def complete_task(task_id: int) -> int:
         task = db.query(ToDoList).filter(ToDoList.id == task_id).first()
         if task:
             task.is_done = True
-            task.done_date = datetime.datetime.now()
+            task.done_date = datetime.now()
             db.commit()
             return task.value
         return 0
@@ -174,7 +174,7 @@ def get_task_by_id(task_id: int):
 
 def update_monthly_stats(points: int):
     """Добавить баллы за текущий месяц"""
-    now = datetime.datetime.now()
+    now = datetime.now()
     year = now.year
     month = now.month
 
@@ -308,7 +308,7 @@ def add_goal(name: str, target_amount: int, deadline: str = None) -> int:
             is_achieved=False
         )
         if deadline:
-            new_goal.deadline = datetime.datetime.strptime(deadline, "%Y-%m-%d")
+            new_goal.deadline = datetime.strptime(deadline, "%Y-%m-%d")
         db.add(new_goal)
         db.commit()
         return new_goal.id
