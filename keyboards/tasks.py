@@ -29,7 +29,6 @@ def get_tasks_main_keyboard() -> InlineKeyboardMarkup:
 # ============================================
 
 def get_confirm_keyboard(action: str, task_id: int = None) -> InlineKeyboardMarkup:
-    """Клавиатура для подтверждения действия (add, complete, delete)"""
     if action == "add":
         buttons = [
             InlineKeyboardButton(text="Да, добавить", callback_data="confirm_and_yes"),
