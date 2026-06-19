@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: todo_investing_bot
+    restart: always
+    volumes:
+      - ./data:/app/data  # для сохранения БД между перезапусками
+    env_file:
+      - .env
+    environment:
+      - TZ=Europe/Moscow
