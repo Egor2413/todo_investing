@@ -3,7 +3,7 @@ from sqlalchemy import ( create_engine, Integer, String, DateTime, Boolean,
 from sqlalchemy.orm import declarative_base, sessionmaker, Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from config import DATABASE_URL
-import datetime
+from datetime import datetime
 
 engine = create_engine(
     DATABASE_URL,
@@ -547,9 +547,6 @@ def create_monthly_snapshot(year: int, month: int) -> int:
 # ============================================
 # ФУНКЦИИ ДЛЯ ИНВЕСТИЦИЙ (ДОПОЛНИТЕЛЬНЫЕ)
 # ============================================
-
-from datetime import datetime, timedelta
-
 
 def get_current_quarter() -> tuple:
     """Возвращает (год, квартал) для текущей даты"""
