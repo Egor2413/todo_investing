@@ -72,7 +72,7 @@ class FinancialTransaction(Base):
     transaction_type: Mapped[str] = mapped_column(String(20), nullable=False)  # income, expense, transfer
     amount: Mapped[int] = mapped_column(Integer, nullable=False)  # сумма в рублях
     description: Mapped[str] = mapped_column(String(255), nullable=True)  # "Пополнение", "Покупка BTC" и т.д.
-    transaction_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.datetime.now)
+    transaction_date: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     account = relationship("FinancialAccount", back_populates="transactions")
 
 
@@ -89,9 +89,9 @@ class Security(Base):
     risk_level: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=5)
     avg_dividents: Mapped[float] = mapped_column(Float, nullable=False, default=0)
     account_id: Mapped[int] = mapped_column(Integer, ForeignKey("financial_account.id"), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.datetime.now)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.datetime.now,
-                                                          onupdate=datetime.datetime.now)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now,
+                                                          onupdate=datetime.now)
     snapshots = relationship("SecuritySnapshot", back_populates="security", cascade="all, delete-orphan")
 
 
