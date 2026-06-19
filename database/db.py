@@ -20,7 +20,7 @@ class ToDoList(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     task: Mapped[str] = mapped_column(String(150), nullable=False)
-    date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.datetime.now)
+    date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
     due_date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     value: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     is_done: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
