@@ -306,11 +306,11 @@ async def process_goal_input(message: Message, state: FSMContext):
     now = datetime.now()
     stats = get_monthly_stats(now.year, now.month)
 
-    # Получаем сессию
     db_session = session()
 
     if stats:
         stats.target_points = goal
+        db_session.add(stats)  
     else:
         stats = MonthlyStats(
             year=now.year,
@@ -325,11 +325,9 @@ async def process_goal_input(message: Message, state: FSMContext):
 
     await state.clear()
     await message.answer(
-        f"✅ Цель на месяц установлена: {goal} баллов!\n\n"
-        f"Теперь можно вернуться в меню статистики.",
+        f"✅ Цель на месяц установлена: {goal} баллов!",
         reply_markup=get_stats_keyboard()
     )
-
 
 @router.callback_query(F.data == "stats_last_12")
 async def stats_last_12_months(callback: CallbackQuery):
