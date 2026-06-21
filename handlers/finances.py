@@ -80,13 +80,23 @@ async def back_to_finance_menu(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data == "total_balance")
 async def show_total_balance(callback: CallbackQuery):
-    """Показать общий баланс (сумму всех счетов)"""
     await callback.answer()
-    total = get_total_balance()
-    await callback.message.answer(
-        f"💰 <b>Общий баланс:</b> {total} ₽",
-        reply_markup=get_finances_back_button()
-    )
+    await callback.message.edit_reply_markup(reply_markup=None)
+
+    balances = get_balance_by_currency()
+
+    if not balances:
+        await callback.message.answer(
+            "💰 Баланс пуст. Добавьте счёт через 'Добавить счёт'.",
+            reply_markup=get_finances_back_button()
+        )
+        return
+
+    text = "💰 <b>Общий баланс</b>\n\n"
+    for currency, amount in balances.items():
+        text += f"💵 <b>{currency}</b>: {amount:,.0f}\n"
+
+    await callback.message.answer(text, reply_markup=get_finances_back_button())
 
 
 # ============================================
