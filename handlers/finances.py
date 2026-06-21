@@ -24,7 +24,7 @@ from states.finances import (
     GoalActionStates
 )
 from database.db import (
-    get_total_balance,
+    get_balance_by_currency,
     get_balance_by_type,
     add_account,
     update_balance,
