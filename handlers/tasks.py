@@ -294,7 +294,6 @@ async def stats_set_goal(callback: CallbackQuery, state: FSMContext):
 
 @router.message(AddTaskStates.waiting_goal)
 async def process_goal_input(message: Message, state: FSMContext):
-    """Обработка ввода цели"""
     try:
         goal = int(message.text)
         if goal < 0:
@@ -307,6 +306,9 @@ async def process_goal_input(message: Message, state: FSMContext):
     now = datetime.now()
     stats = get_monthly_stats(now.year, now.month)
 
+    # Получаем сессию
+    db_session = session()
+
     if stats:
         stats.target_points = goal
     else:
@@ -316,9 +318,11 @@ async def process_goal_input(message: Message, state: FSMContext):
             points=0,
             target_points=goal
         )
-        session.add(stats)
+        db_session.add(stats)
 
-    session.commit()
+    db_session.commit()
+    db_session.close()
+
     await state.clear()
     await message.answer(
         f"✅ Цель на месяц установлена: {goal} баллов!\n\n"
