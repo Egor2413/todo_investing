@@ -229,11 +229,15 @@ def get_average_monthly_points() -> float:
 # ФУНКЦИИ ДЛЯ ФИНАНСОВ (БАЗОВЫЕ)
 # ============================================
 
-def get_total_balance() -> int:
-    """Получить сумму балансов всех счетов"""
+def get_balance_by_currency() -> dict:
+    """Получить баланс по каждой валюте"""
     with session() as db:
-        total = db.query(func.sum(FinancialAccount.balance)).scalar()
-        return total if total is not None else 0
+        results = db.query(
+            FinancialAccount.currency,
+            func.sum(FinancialAccount.balance).label('total')
+        ).group_by(FinancialAccount.currency).all()
+        
+        return {currency: total for currency, total in results}
 
 def get_accounts_by_type(account_type: str = None) -> list:
     """Получить список счетов (опционально по типу)"""
